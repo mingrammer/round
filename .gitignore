@@ -1,0 +1,5 @@
+# editor
+.vscode/
+
+# trash
+.DS_Store
