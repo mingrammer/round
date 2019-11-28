@@ -52,7 +52,7 @@ $ round -p new -s _circle /path/to/square.png
 | leaf     | ![flower_leaf.jpg](examples/flower_leaf.jpg)             | ![flower_leaf.png](examples/flower_leaf.png)             | ![flower2_leaf.jpg](examples/flower2_leaf.jpg)             | ![flower2_leaf.png](examples/flower2_leaf.png)             |
 | circle   | ![new_flower_ciecle.jpg](examples/new_flower_circle.jpg) | ![new_flower_ciecle.png](examples/new_flower_circle.png) | ![new_flower2_ciecle.jpg](examples/new_flower2_circle.jpg) | ![new_flower2_ciecle.png](examples/new_flower2_circle.png) |
 
-| original   | half     | leap                        | circle                      |
+| original   | half     | leaf                        | circle                      |
 | ---------- | -------- | --------------------------- | --------------------------- |
 | no options | `-r 0.5` | `-r 0.75 -c tl,br -s _leaf` | `-r 1.0 -p new_ -s _circle` |
 
