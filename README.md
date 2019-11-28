@@ -37,7 +37,7 @@ You can round only specific corners.
 $ round -c tl,br /path/to/image.png
 ```
 
-Add prefix or suffix. (default suffix: **_rounded**)
+Add prefix or suffix to output files. (default suffix: **_rounded**)
 
 ```shell
 $ round -p new -s _circle /path/to/square.png
