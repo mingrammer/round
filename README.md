@@ -1,6 +1,6 @@
 # Round
 
-Round is a command line for rounding the images.
+Round is a command-line for rounding the images.
 
 ## Installation
 
@@ -58,3 +58,6 @@ $ round -p new -s _circle /path/to/square.png
 
 Photo by Alex Blăjan on Unsplash
 
+## License
+
+MIT
