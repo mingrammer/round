@@ -74,6 +74,9 @@ func process(path string, opts *option, wg *sync.WaitGroup) {
 	convert(&m, opts)
 
 	outPath := opts.output
+	if opts.owrite {
+		outPath = path
+	}
 	if outPath == "" {
 		outPath = buildOutPath(path, opts.prefix, opts.suffix)
 	}

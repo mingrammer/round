@@ -15,6 +15,7 @@ type corner struct {
 
 type option struct {
 	rate   float64
+	owrite bool
 	output string
 	prefix string
 	suffix string
@@ -37,6 +38,7 @@ func parseOptions() *option {
 
 	rate := flag.Float64("r", opts.rate, "rounding rate. 1 means circular. (0~1)")
 	corner := flag.String("c", "tl,tr,bl,br", "comma separated corners to round.")
+	owrite := flag.Bool("w", false, "if true, will overwrite the original files.")
 	output := flag.String("o", opts.output, "output file name for a single file.")
 	prefix := flag.String("p", opts.prefix, "prefix for the output file names.")
 	suffix := flag.String("s", opts.suffix, "suffix for the output file names.")
@@ -50,6 +52,7 @@ func parseOptions() *option {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	opts.owrite = *owrite
 	opts.output = *output
 	opts.prefix = *prefix
 	opts.suffix = *suffix
