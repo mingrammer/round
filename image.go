@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"encoding/base64"
 	"image"
 	"image/jpeg"
 	"image/png"
+	"io"
 	"os"
 )
 
@@ -16,6 +19,24 @@ func encode(fm string, f *os.File, m image.Image) error {
 	default:
 		return errInvalidFormat
 	}
+}
+
+func encodeBase64(fm string, m image.Image) (string, error) {
+	buf := new(bytes.Buffer)
+	err := errInvalidFormat
+	var prefix string
+	switch fm {
+	case "png":
+		prefix = "data:image/png;base64,"
+		err = png.Encode(buf, m)
+	case "jpg", "jpeg":
+		prefix = "data:image/jpeg;base64,"
+		err = jpeg.Encode(buf, m, nil)
+	}
+	if err != nil {
+		return "", err
+	}
+	return prefix + base64.StdEncoding.EncodeToString(buf.Bytes()), nil
 }
 
 func decode(r io.Reader) (image.Image, string, error) {
