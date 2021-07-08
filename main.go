@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/base64"
 	"errors"
 	"flag"
+	"fmt"
 	"image"
 	"image/color"
 	"log"
@@ -60,6 +62,21 @@ func parsePaths(paths []string) ([]string, error) {
 
 func process(path string, opts *option, wg *sync.WaitGroup) {
 	defer wg.Done()
+
+	if opts.base64 {
+		reader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(path))
+		m, fm, err := decode(reader)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		convert(&m, opts)
+		out, err := encodeBase64(fm, m)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		fmt.Print(out)
+		return
+	}
 
 	f, err := os.Open(path)
 	if err != nil {
