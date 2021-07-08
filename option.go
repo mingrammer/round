@@ -16,6 +16,7 @@ type corner struct {
 type option struct {
 	rate   float64
 	owrite bool
+	base64 bool
 	output string
 	prefix string
 	suffix string
