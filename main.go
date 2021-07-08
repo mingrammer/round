@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/base64"
 	"errors"
 	"flag"
@@ -31,18 +32,28 @@ var empty = color.RGBA{255, 255, 255, 0}
 
 func main() {
 	opts := parseOptions()
-
-	paths, err := parsePaths(flag.Args())
-	if err != nil {
-		log.Fatalln(err)
-	}
-
 	wg := new(sync.WaitGroup)
-	for _, p := range paths {
+
+	// TODO: support multiple base64 images..?
+	if opts.base64 {
+		reader := bufio.NewReader(os.Stdin)
+		rawBase64, err := reader.ReadString('\n')
+		if err != nil {
+			log.Fatalln(err)
+		}
 		wg.Add(1)
-		go process(p, opts, wg)
+		process(strings.TrimSpace(rawBase64), opts, wg)
+	} else {
+		paths, err := parsePaths(flag.Args())
+		if err != nil {
+			log.Fatalln(err)
+		}
+		for _, p := range paths {
+			wg.Add(1)
+			go process(p, opts, wg)
+		}
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func parsePaths(paths []string) ([]string, error) {
