@@ -18,8 +18,8 @@ func encode(fm string, f *os.File, m image.Image) error {
 	}
 }
 
-func decode(f *os.File) (image.Image, string, error) {
-	m, fm, err := image.Decode(f)
+func decode(r io.Reader) (image.Image, string, error) {
+	m, fm, err := image.Decode(r)
 	switch fm {
 	case "png", "jpg", "jpeg":
 		return m, fm, err
