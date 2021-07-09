@@ -1,14 +1,18 @@
 package main
 
 import (
+	"bufio"
+	"encoding/base64"
 	"errors"
 	"flag"
+	"fmt"
 	"image"
 	"image/color"
 	"log"
 	"math"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 )
@@ -18,6 +22,7 @@ var (
 	errInvalidFormat = errors.New("invalid image format")
 	errInvalidRate   = errors.New("invalid rounding rate")
 	errInvalidCorner = errors.New("invalid corner value")
+	base64Regex      = regexp.MustCompile(`(?m)data:image\/(png|jpe?g);base64,`)
 )
 
 // Settable has a Set method to set the color for a point.
@@ -29,18 +34,31 @@ var empty = color.RGBA{255, 255, 255, 0}
 
 func main() {
 	opts := parseOptions()
-
-	paths, err := parsePaths(flag.Args())
-	if err != nil {
-		log.Fatalln(err)
-	}
-
 	wg := new(sync.WaitGroup)
-	for _, p := range paths {
+
+	// if we're in base64 mode, read data from stdin once and process it
+	if opts.base64 {
+		reader := bufio.NewReader(os.Stdin)
+		rawBase64, err := reader.ReadString('\n')
+		if err != nil {
+			log.Fatalln(err)
+		}
+		if strings.HasPrefix(rawBase64, "data:image/") {
+			rawBase64 = base64Regex.ReplaceAllString(rawBase64, "")
+		}
 		wg.Add(1)
-		go process(p, opts, wg)
+		process(strings.TrimSpace(rawBase64), opts, wg)
+	} else {
+		paths, err := parsePaths(flag.Args())
+		if err != nil {
+			log.Fatalln(err)
+		}
+		for _, p := range paths {
+			wg.Add(1)
+			go process(p, opts, wg)
+		}
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func parsePaths(paths []string) ([]string, error) {
@@ -60,6 +78,23 @@ func parsePaths(paths []string) ([]string, error) {
 
 func process(path string, opts *option, wg *sync.WaitGroup) {
 	defer wg.Done()
+
+	// if we're in base64 mode, decode data from 'path', convert it, encode
+	// it back to base64 and print to stdout, otherwise convert it normally
+	if opts.base64 {
+		reader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(path))
+		m, fm, err := decode(reader)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		convert(&m, opts)
+		out, err := encodeBase64(fm, m)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		fmt.Print(out)
+		return
+	}
 
 	f, err := os.Open(path)
 	if err != nil {
