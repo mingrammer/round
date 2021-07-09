@@ -36,7 +36,7 @@ func main() {
 	opts := parseOptions()
 	wg := new(sync.WaitGroup)
 
-	// TODO: support multiple base64 images..?
+	// if we're in base64 mode, read data from stdin once and process it
 	if opts.base64 {
 		reader := bufio.NewReader(os.Stdin)
 		rawBase64, err := reader.ReadString('\n')
@@ -79,6 +79,8 @@ func parsePaths(paths []string) ([]string, error) {
 func process(path string, opts *option, wg *sync.WaitGroup) {
 	defer wg.Done()
 
+	// if we're in base64 mode, decode data from 'path', convert it, encode
+	// it back to base64 and print to stdout, otherwise convert it normally
 	if opts.base64 {
 		reader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(path))
 		m, fm, err := decode(reader)
