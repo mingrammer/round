@@ -46,6 +46,7 @@ $ round -p new -s _circle /path/to/square.png
 Supply the image in base64 format through stdin. (processed image will be printed on stdout)
 
 ```shell
+# the file *must* have a new line at the end
 $ cat base64image | round -b
 ```
 
