@@ -43,6 +43,12 @@ Add prefix or suffix to output files. (default suffix: **_rounded**)
 $ round -p new -s _circle /path/to/square.png
 ```
 
+Supply the image in base64 format through stdin. (processed image will be printed on stdout)
+
+```shell
+$ cat base64image | round -b
+```
+
 ##  Examples
 
 |          | rect+jpg                                                 | rect+png                                                 | square+jpg                                                 | square+png                                                 |
