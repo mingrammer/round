@@ -12,6 +12,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 )
@@ -21,6 +22,7 @@ var (
 	errInvalidFormat = errors.New("invalid image format")
 	errInvalidRate   = errors.New("invalid rounding rate")
 	errInvalidCorner = errors.New("invalid corner value")
+	base64Regex      = regexp.MustCompile(`(?m)data:image\/(png|jpe?g);base64,`)
 )
 
 // Settable has a Set method to set the color for a point.
@@ -40,6 +42,9 @@ func main() {
 		rawBase64, err := reader.ReadString('\n')
 		if err != nil {
 			log.Fatalln(err)
+		}
+		if strings.HasPrefix(rawBase64, "data:image/") {
+			rawBase64 = base64Regex.ReplaceAllString(rawBase64, "")
 		}
 		wg.Add(1)
 		process(strings.TrimSpace(rawBase64), opts, wg)
