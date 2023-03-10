@@ -5,7 +5,8 @@ Round is a command-line for rounding the images.
 ## Installation
 
 ```
-go get github.com/mingrammer/round
+go install  github.com/mingrammer/round@latest
+export PATH=$PATH:~/go/bin/
 ```
 
 ## Usage
